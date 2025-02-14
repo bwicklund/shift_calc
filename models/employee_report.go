@@ -1,8 +1,8 @@
-package main
+package models
 
 import "time"
 
-// JSON Report of each employees hours worked in a week. Evaluate output JSON against this struct
+// JSON Report of each employees hours worked in a week.
 type EmployeeSummary struct {
 	EmployeeID int64 `json:"EmployeeID"`
 	// This should be a date formated as "YYYY-MM-DD"
