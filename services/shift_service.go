@@ -120,24 +120,22 @@ func CondenseShiftData(shifts []models.Shift) []models.EmployeeReport {
 		// This code is kind of trash, I should have made a function to handle
 		// checking and creating the next week record since it is repeated above TODO
 		if nextWeekShiftHours != nil {
-			nextWeekStartOfWeek := utils.StartOfWeek(nextWeekShiftHours.Start)
+			nextWeekStartOfWeekKey := utils.StartOfWeek(nextWeekShiftHours.Start)
 
 			var nextWeekEmployeeWeek *models.EmployeeReport
 
 			// Does this exist aready? Create or get
-			if existingRecord, exists := employeeReport[shift.EmployeeID][nextWeekStartOfWeek]; exists {
-				nextWeekEmployeeWeek = existingRecord
-			} else {
+			nextWeekEmployeeWeek, exists := employeeReport[shift.EmployeeID][nextWeekStartOfWeekKey]
+			if !exists {
 				nextWeekEmployeeWeek = &models.EmployeeReport{
 					EmployeeID:    shift.EmployeeID,
-					StartOfWeek:   nextWeekStartOfWeek,
+					StartOfWeek:   nextWeekStartOfWeekKey,
 					RegularHours:  0,
 					OverTimeHours: 0,
 					InvalidShifts: []int64{},
 				}
-				employeeReport[shift.EmployeeID][nextWeekStartOfWeek] = nextWeekEmployeeWeek
+				employeeReport[shift.EmployeeID][nextWeekStartOfWeekKey] = nextWeekEmployeeWeek
 			}
-
 			// Once again repeated code, should have made a function to handle this TODO
 			nextWeekRemainingRegular := 40 - nextWeekEmployeeWeek.RegularHours
 			if nextWeekShiftHours.Hours <= nextWeekRemainingRegular {
